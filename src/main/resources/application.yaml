@@ -7,6 +7,6 @@ ktor:
 
 jwt:
   secret: $JWT_SECRET
-  issuer: "https://0.0.0.0:8433"
-  audience: "gameplanner"
+  issuer: $JWT_ISSUER
+  audience: $JWT_AUDIENCE
   realm: "Access to Game Planner API"
