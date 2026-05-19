@@ -2,7 +2,6 @@ package com.codingcanines.routes
 
 import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
-import com.codingcanines.models.UserRole
 import com.codingcanines.models.dto.requests.LoginRequest
 import com.codingcanines.models.dto.requests.RegisterRequest
 import com.codingcanines.models.dto.responses.toUserResponse
@@ -14,11 +13,14 @@ import io.ktor.server.response.respond
 import io.ktor.server.routing.Route
 import io.ktor.server.routing.post
 import java.util.Date
+import java.util.UUID
 
 fun Route.authRoutes(userRepository: UserRepository) {
     val jwtSecret = environment.config.property("jwt.secret").getString()
     val jwtIssuer = environment.config.property("jwt.issuer").getString()
     val jwtAudience = environment.config.property("jwt.audience").getString()
+
+    val algorithm = Algorithm.HMAC256(jwtSecret)
 
     post("/login") {
         val request = call.receive<LoginRequest>()
@@ -29,15 +31,32 @@ fun Route.authRoutes(userRepository: UserRepository) {
             return@post
         }
 
-        val token = JWT.create()
+        val now = System.currentTimeMillis()
+
+        val accessToken = JWT.create()
             .withAudience(jwtAudience)
             .withIssuer(jwtIssuer)
             .withClaim("username", user.username)
-            .withClaim("role", UserRole.Staff.toString())
-            .withExpiresAt(Date(System.currentTimeMillis() + 3_600_000L))
-            .sign(Algorithm.HMAC256(jwtSecret))
+            .withClaim("role", user.role.toString())
+            .withExpiresAt(Date(now + 15 * 60 * 1000L))
+            .sign(algorithm)
 
-        call.respond(HttpStatusCode.OK, mapOf("token" to token))
+        val refreshLifespan = if (request.rememberMe) {
+            30 * 24 * 60 * 60 * 1000L
+        } else {
+            24 * 60 * 60 * 1000L
+        }
+
+        val refreshTokenId = UUID.randomUUID().toString()
+        val refreshToken = JWT.create()
+            .withAudience(jwtAudience)
+            .withIssuer(jwtIssuer)
+            .withClaim("username", user.username)
+            .withJWTId(refreshTokenId)
+            .withExpiresAt(Date(now + refreshLifespan))
+            .sign(algorithm)
+
+        call.respond(HttpStatusCode.OK, mapOf("accessToken" to accessToken, "refreshToken" to refreshToken))
     }
 
     post("/register") {
