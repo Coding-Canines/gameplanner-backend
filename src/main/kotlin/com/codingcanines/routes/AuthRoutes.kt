@@ -2,7 +2,9 @@ package com.codingcanines.routes
 
 import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
+import com.auth0.jwt.exceptions.JWTVerificationException
 import com.codingcanines.models.users.dto.requests.LoginRequest
+import com.codingcanines.models.users.dto.requests.RefreshRequest
 import com.codingcanines.models.users.dto.requests.RegisterRequest
 import com.codingcanines.models.users.dto.responses.toUserResponse
 import com.codingcanines.repositories.users.UserRepository
@@ -21,6 +23,10 @@ fun Route.authRoutes(userRepository: UserRepository) {
     val jwtAudience = environment.config.property("jwt.audience").getString()
 
     val algorithm = Algorithm.HMAC256(jwtSecret)
+    val verifier = JWT.require(algorithm)
+        .withAudience(jwtAudience)
+        .withIssuer(jwtIssuer)
+        .build()
 
     post("/login") {
         val request = call.receive<LoginRequest>()
@@ -57,6 +63,37 @@ fun Route.authRoutes(userRepository: UserRepository) {
             .sign(algorithm)
 
         call.respond(HttpStatusCode.OK, mapOf("accessToken" to accessToken, "refreshToken" to refreshToken))
+    }
+
+    post("/refresh") {
+        val request = call.receive<RefreshRequest>()
+
+        val decodedJWT = try {
+            verifier.verify(request.refreshToken)
+        } catch (ex: JWTVerificationException) {
+            call.respond(HttpStatusCode.Unauthorized, "Invalid or expired refresh token")
+            println(ex)
+            return@post
+        }
+
+        val username = decodedJWT.getClaim("username").asString()
+        val user = userRepository.findByUsername(username)
+        if (user == null) {
+            call.respond(HttpStatusCode.Unauthorized, "User no longer exists")
+            return@post
+        }
+
+        val now = System.currentTimeMillis()
+
+        val accessToken = JWT.create()
+            .withAudience(jwtAudience)
+            .withIssuer(jwtIssuer)
+            .withClaim("username", user.username)
+            .withClaim("role", user.role.toString())
+            .withExpiresAt(Date(now + 15 * 60 * 1000L))
+            .sign(algorithm)
+
+        call.respond(HttpStatusCode.OK, mapOf("accessToken" to accessToken))
     }
 
     post("/register") {
