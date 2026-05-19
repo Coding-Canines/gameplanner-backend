@@ -1,7 +1,7 @@
-package com.codingcanines.models.dto.responses
+package com.codingcanines.models.users.dto.responses
 
-import com.codingcanines.models.User
-import com.codingcanines.models.UserRole
+import com.codingcanines.models.users.User
+import com.codingcanines.models.users.UserRole
 import kotlinx.serialization.Serializable
 
 @Serializable

@@ -1,4 +1,4 @@
-package com.codingcanines.models
+package com.codingcanines.models.users
 
 data class User(
     val id: Int,

@@ -1,6 +1,6 @@
 package com.codingcanines.plugins
 
-import com.codingcanines.repositories.UserRepository
+import com.codingcanines.repositories.users.UserRepository
 import com.codingcanines.routes.authRoutes
 import com.codingcanines.routes.userRoutes
 import io.ktor.server.application.*

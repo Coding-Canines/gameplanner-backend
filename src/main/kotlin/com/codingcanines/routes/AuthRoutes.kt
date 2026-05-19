@@ -2,10 +2,10 @@ package com.codingcanines.routes
 
 import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
-import com.codingcanines.models.dto.requests.LoginRequest
-import com.codingcanines.models.dto.requests.RegisterRequest
-import com.codingcanines.models.dto.responses.toUserResponse
-import com.codingcanines.repositories.UserRepository
+import com.codingcanines.models.users.dto.requests.LoginRequest
+import com.codingcanines.models.users.dto.requests.RegisterRequest
+import com.codingcanines.models.users.dto.responses.toUserResponse
+import com.codingcanines.repositories.users.UserRepository
 import com.codingcanines.utils.PasswordHelper
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.request.receive

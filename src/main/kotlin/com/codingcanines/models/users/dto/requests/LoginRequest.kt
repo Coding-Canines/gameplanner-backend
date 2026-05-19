@@ -1,4 +1,4 @@
-package com.codingcanines.models.dto.requests
+package com.codingcanines.models.users.dto.requests
 
 import kotlinx.serialization.Serializable
 

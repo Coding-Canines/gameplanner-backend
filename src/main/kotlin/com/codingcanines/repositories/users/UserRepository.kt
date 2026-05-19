@@ -1,6 +1,6 @@
-package com.codingcanines.repositories
+package com.codingcanines.repositories.users
 
-import com.codingcanines.models.User
+import com.codingcanines.models.users.User
 
 interface UserRepository {
     suspend fun getAllUsers(): List<User>

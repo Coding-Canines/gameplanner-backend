@@ -1,7 +1,7 @@
 package com.codingcanines.routes
 
-import com.codingcanines.models.dto.responses.toUserResponse
-import com.codingcanines.repositories.UserRepository
+import com.codingcanines.models.users.dto.responses.toUserResponse
+import com.codingcanines.repositories.users.UserRepository
 import io.ktor.http.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*

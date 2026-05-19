@@ -1,6 +1,6 @@
-package com.codingcanines.database
+package com.codingcanines.database.users
 
-import com.codingcanines.models.UserRole
+import com.codingcanines.models.users.UserRole
 import org.jetbrains.exposed.v1.core.dao.id.IntIdTable
 
 object Users : IntIdTable("users") {
