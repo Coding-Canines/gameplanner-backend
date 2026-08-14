@@ -1,10 +1,10 @@
 [versions]
-exposed = "1.2.0"
-kotlin = "2.3.21"
-ktor = "3.4.3"
-logback = "1.5.20"
+exposed = "1.4.0"
+kotlin = "2.4.10"
+ktor = "3.5.2"
+logback = "1.6.2"
 bcrypt = "0.10.2"
-r2dbc-postgres = "1.1.1.RELEASE"
+r2dbc-postgres = "1.1.2.RELEASE"
 
 [libraries]
 ktor-server-core = { module = "io.ktor:ktor-server-core", version.ref = "ktor" }
