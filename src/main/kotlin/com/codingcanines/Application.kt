@@ -1,6 +1,7 @@
 package com.codingcanines
 
 import com.codingcanines.plugins.configureAuthentication
+import com.codingcanines.plugins.configureCors
 import com.codingcanines.plugins.configureDependencies
 import com.codingcanines.plugins.configureMonitoring
 import com.codingcanines.plugins.configureRouting
@@ -16,5 +17,6 @@ fun Application.module() {
     configureMonitoring()
     configureDependencies()
     configureAuthentication()
+    configureCors()
     configureRouting()
 }

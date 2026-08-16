@@ -11,6 +11,13 @@ application {
     mainClass = "io.ktor.server.cio.EngineMain"
 }
 
+ktor {
+    openApi {
+        enabled = true
+        codeInferenceEnabled = true
+    }
+}
+
 kotlin {
     jvmToolchain(21)
 }
@@ -31,6 +38,9 @@ dependencies {
     implementation(libs.ktor.server.cio)
     implementation(libs.logback.classic)
     implementation(libs.ktor.server.config.yaml)
+    implementation(libs.ktor.server.swagger)
+    implementation(libs.ktor.server.routing.openapi)
+    implementation(libs.ktor.server.cors)
     testImplementation(libs.ktor.server.test.host)
     testImplementation(libs.kotlin.test.junit)
 }
