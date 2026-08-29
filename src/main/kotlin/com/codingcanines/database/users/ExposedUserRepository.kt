@@ -1,5 +1,6 @@
 package com.codingcanines.database.users
 
+import com.codingcanines.database.tables.Users
 import com.codingcanines.models.users.User
 import com.codingcanines.models.users.UserRole
 import com.codingcanines.repositories.users.UserRepository

@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.kotlin.jvm)
     alias(libs.plugins.ktor)
     alias(libs.plugins.kotlin.plugin.serialization)
+    alias(libs.plugins.exposed)
 }
 
 group = "com.codingcanines"
@@ -15,6 +16,14 @@ ktor {
     openApi {
         enabled = true
         codeInferenceEnabled = true
+    }
+}
+
+exposed {
+    migrations {
+        tablesPackage.set("com.codingcanines.database.tables")
+        testContainersImageName.set("postgres:15-alpine")
+        fileDirectory.set(layout.projectDirectory.dir("src/main/resources/db/migration"))
     }
 }
 

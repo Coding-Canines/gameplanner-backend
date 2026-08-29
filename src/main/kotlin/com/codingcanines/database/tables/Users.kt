@@ -1,4 +1,4 @@
-package com.codingcanines.database.users
+package com.codingcanines.database.tables
 
 import com.codingcanines.models.users.UserRole
 import org.jetbrains.exposed.v1.core.dao.id.IntIdTable
