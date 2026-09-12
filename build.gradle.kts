@@ -43,6 +43,7 @@ dependencies {
     implementation(libs.r2dbc.postgresql)
     implementation(libs.exposed.core)
     implementation(libs.exposed.r2dbc)
+    implementation(libs.exposed.kotlin.datetime)
     implementation(libs.jdbc.postgres)
     implementation(libs.flyway.core)
     implementation(libs.flyway.postgres)
@@ -53,6 +54,7 @@ dependencies {
     implementation(libs.ktor.server.swagger)
     implementation(libs.ktor.server.routing.openapi)
     implementation(libs.ktor.server.cors)
+    implementation(libs.kotlinx.datetime)
     testImplementation(libs.ktor.server.test.host)
     testImplementation(libs.kotlin.test.junit)
 }

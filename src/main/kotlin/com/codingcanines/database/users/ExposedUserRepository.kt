@@ -57,6 +57,11 @@ class ExposedUserRepository(private val database: R2dbcDatabase) : UserRepositor
         username = this[Users.username],
         email = this[Users.email],
         passwordHash = this[Users.passwordHash],
-        role = this[Users.role]
+        role = this[Users.role],
+        fullLegalName = this[Users.fullLegalName],
+        fullBirthName = this[Users.fullBirthName],
+        mothersMaidenName = this[Users.mothersMaidenName],
+        dateOfBirth = this[Users.dateOfBirth],
+        placeOfBirth = this[Users.placeOfBirth]
     )
 }
