@@ -6,6 +6,8 @@ import com.codingcanines.plugins.configureDependencies
 import com.codingcanines.plugins.configureMonitoring
 import com.codingcanines.plugins.configureRouting
 import com.codingcanines.plugins.configureSerialization
+import com.codingcanines.plugins.configureStatusPages
+import com.codingcanines.plugins.configureValidation
 import io.ktor.server.application.*
 
 fun main(args: Array<String>) {
@@ -18,5 +20,7 @@ fun Application.module() {
     configureDependencies()
     configureAuthentication()
     configureCors()
+    configureValidation()
+    configureStatusPages()
     configureRouting()
 }
