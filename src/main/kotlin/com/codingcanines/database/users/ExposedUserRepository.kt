@@ -2,6 +2,7 @@ package com.codingcanines.database.users
 
 import com.codingcanines.database.tables.Users
 import com.codingcanines.models.users.User
+import com.codingcanines.models.users.UserDetails
 import com.codingcanines.models.users.UserRole
 import com.codingcanines.repositories.users.UserRepository
 import kotlinx.coroutines.flow.map
@@ -14,6 +15,7 @@ import org.jetbrains.exposed.v1.r2dbc.R2dbcDatabase
 import org.jetbrains.exposed.v1.r2dbc.insertAndGetId
 import org.jetbrains.exposed.v1.r2dbc.selectAll
 import org.jetbrains.exposed.v1.r2dbc.transactions.suspendTransaction
+import org.jetbrains.exposed.v1.r2dbc.update
 
 class ExposedUserRepository(private val database: R2dbcDatabase) : UserRepository {
     override suspend fun getAllUsers(): List<User> = dbQuery {
@@ -47,6 +49,19 @@ class ExposedUserRepository(private val database: R2dbcDatabase) : UserRepositor
             passwordHash = passwordHash,
             role = UserRole.Staff
         )
+    }
+
+    override suspend fun updateUserDetails(id: Int, userDetails: UserDetails): User? = dbQuery {
+        val updatedRows = Users.update({ Users.id eq id }) {
+            it[username] = userDetails.username
+            it[fullLegalName] = userDetails.fullLegalName
+            it[fullBirthName] = userDetails.fullBirthName
+            it[mothersMaidenName] = userDetails.mothersMaidenName
+            it[dateOfBirth] = userDetails.dateOfBirth
+            it[placeOfBirth] = userDetails.placeOfBirth
+        }
+
+        if (updatedRows > 0) findById(id) else null
     }
 
     private suspend fun <T> dbQuery(block: suspend () -> T): T =
