@@ -28,6 +28,10 @@ class ExposedUserRepository(private val database: R2dbcDatabase) : UserRepositor
         Users.selectAll().where { Users.username eq username }.singleOrNull()?.toUser()
     }
 
+    override suspend fun findById(id: Int): User? = dbQuery {
+        Users.selectAll().where { Users.id eq id }.singleOrNull()?.toUser()
+    }
+
     override suspend fun addUser(username: String, email: String, passwordHash: String): User = dbQuery {
         val insertedId = Users.insertAndGetId {
             it[Users.username] = username
