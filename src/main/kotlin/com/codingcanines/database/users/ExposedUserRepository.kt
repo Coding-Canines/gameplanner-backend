@@ -1,6 +1,8 @@
 package com.codingcanines.database.users
 
+import com.codingcanines.database.tables.Users
 import com.codingcanines.models.users.User
+import com.codingcanines.models.users.UserDetails
 import com.codingcanines.models.users.UserRole
 import com.codingcanines.repositories.users.UserRepository
 import kotlinx.coroutines.flow.map
@@ -13,6 +15,7 @@ import org.jetbrains.exposed.v1.r2dbc.R2dbcDatabase
 import org.jetbrains.exposed.v1.r2dbc.insertAndGetId
 import org.jetbrains.exposed.v1.r2dbc.selectAll
 import org.jetbrains.exposed.v1.r2dbc.transactions.suspendTransaction
+import org.jetbrains.exposed.v1.r2dbc.update
 
 class ExposedUserRepository(private val database: R2dbcDatabase) : UserRepository {
     override suspend fun getAllUsers(): List<User> = dbQuery {
@@ -25,6 +28,10 @@ class ExposedUserRepository(private val database: R2dbcDatabase) : UserRepositor
 
     override suspend fun findByUsername(username: String): User? = dbQuery {
         Users.selectAll().where { Users.username eq username }.singleOrNull()?.toUser()
+    }
+
+    override suspend fun findById(id: Int): User? = dbQuery {
+        Users.selectAll().where { Users.id eq id }.singleOrNull()?.toUser()
     }
 
     override suspend fun addUser(username: String, email: String, passwordHash: String): User = dbQuery {
@@ -44,6 +51,19 @@ class ExposedUserRepository(private val database: R2dbcDatabase) : UserRepositor
         )
     }
 
+    override suspend fun updateUserDetails(id: Int, userDetails: UserDetails): User? = dbQuery {
+        val updatedRows = Users.update({ Users.id eq id }) {
+            it[username] = userDetails.username
+            it[fullLegalName] = userDetails.fullLegalName
+            it[fullBirthName] = userDetails.fullBirthName
+            it[mothersMaidenName] = userDetails.mothersMaidenName
+            it[dateOfBirth] = userDetails.dateOfBirth
+            it[placeOfBirth] = userDetails.placeOfBirth
+        }
+
+        if (updatedRows > 0) findById(id) else null
+    }
+
     private suspend fun <T> dbQuery(block: suspend () -> T): T =
         suspendTransaction(db = database) { block() }
 
@@ -52,6 +72,11 @@ class ExposedUserRepository(private val database: R2dbcDatabase) : UserRepositor
         username = this[Users.username],
         email = this[Users.email],
         passwordHash = this[Users.passwordHash],
-        role = this[Users.role]
+        role = this[Users.role],
+        fullLegalName = this[Users.fullLegalName],
+        fullBirthName = this[Users.fullBirthName],
+        mothersMaidenName = this[Users.mothersMaidenName],
+        dateOfBirth = this[Users.dateOfBirth],
+        placeOfBirth = this[Users.placeOfBirth]
     )
 }

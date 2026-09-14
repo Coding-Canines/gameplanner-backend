@@ -3,6 +3,7 @@ package com.codingcanines.routes
 import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
 import com.auth0.jwt.exceptions.JWTVerificationException
+import com.codingcanines.models.auth.dto.responses.LoginResponse
 import com.codingcanines.models.users.dto.requests.LoginRequest
 import com.codingcanines.models.users.dto.requests.RefreshRequest
 import com.codingcanines.models.users.dto.requests.RegisterRequest
@@ -42,8 +43,7 @@ fun Route.authRoutes(userRepository: UserRepository) {
         val accessToken = JWT.create()
             .withAudience(jwtAudience)
             .withIssuer(jwtIssuer)
-            .withClaim("username", user.username)
-            .withClaim("role", user.role.toString())
+            .withClaim("userId", user.id)
             .withExpiresAt(Date(now + 15 * 60 * 1000L))
             .sign(algorithm)
 
@@ -57,12 +57,17 @@ fun Route.authRoutes(userRepository: UserRepository) {
         val refreshToken = JWT.create()
             .withAudience(jwtAudience)
             .withIssuer(jwtIssuer)
-            .withClaim("username", user.username)
+            .withClaim("userId", user.id)
             .withJWTId(refreshTokenId)
             .withExpiresAt(Date(now + refreshLifespan))
             .sign(algorithm)
+        val loginResponse = LoginResponse(
+            accessToken = accessToken,
+            refreshToken = refreshToken,
+            user = user.toUserResponse()
+        )
 
-        call.respond(HttpStatusCode.OK, mapOf("accessToken" to accessToken, "refreshToken" to refreshToken))
+        call.respond(HttpStatusCode.OK, loginResponse)
     }
 
     post("/refresh") {
@@ -88,8 +93,7 @@ fun Route.authRoutes(userRepository: UserRepository) {
         val accessToken = JWT.create()
             .withAudience(jwtAudience)
             .withIssuer(jwtIssuer)
-            .withClaim("username", user.username)
-            .withClaim("role", user.role.toString())
+            .withClaim("userId", user.id)
             .withExpiresAt(Date(now + 15 * 60 * 1000L))
             .sign(algorithm)
 
